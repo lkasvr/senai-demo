@@ -1,0 +1,66 @@
+[
+  {
+    "Id_da_Maquina": "5534",
+    "Id_do_Teste": "1",
+    "Id_do_Corpo_de_Prova": "1",
+    "Data": "27/04/2021 08:53:31",
+    "Tipo_do_Ensaio": "Cilíndrico",
+    "Dimensoes": [
+      {
+        "Descricao": "Diâmetro",
+        "Valor": "100 mm"
+      }
+    ],
+    "Forca": "261.2457 kN",
+    "Tensão": "33.26283 MPa",
+    "Ruptura": "ND"
+  },
+  {
+    "Id_da_Maquina": "5534",
+    "Id_do_Teste": "1",
+    "Id_do_Corpo_de_Prova": "1",
+    "Data": "27/04/2021 09:06:48",
+    "Tipo_do_Ensaio": "Cilíndrico",
+    "Dimensoes": [
+      {
+        "Descricao": "Diâmetro",
+        "Valor": "100 mm"
+      }
+    ],
+    "Forca": "202.2402 kN",
+    "Tensão": "25.75003 MPa",
+    "Ruptura": "ND"
+  },
+  {
+    "Id_da_Maquina": "5534",
+    "Id_do_Teste": "2",
+    "Id_do_Corpo_de_Prova": "2",
+    "Data": "27/04/2021 09:08:13",
+    "Tipo_do_Ensaio": "Cilíndrico",
+    "Dimensoes": [
+      {
+        "Descricao": "Diâmetro",
+        "Valor": "100 mm"
+      }
+    ],
+    "Forca": "701.1335 kN",
+    "Tensão": "89.2711 MPa",
+    "Ruptura": "ND"
+  },
+  {
+    "Id_da_Maquina": "5534",
+    "Id_do_Teste": "3",
+    "Id_do_Corpo_de_Prova": "1234",
+    "Data": "27/04/2021 11:09:49",
+    "Tipo_do_Ensaio": "Cilíndrico",
+    "Dimensoes": [
+      {
+        "Descricao": "Diâmetro",
+        "Valor": "100 mm"
+      }
+    ],
+    "Forca": "0 kN",
+    "Tensão": "0 MPa",
+    "Ruptura": "ND"
+  }
+]
