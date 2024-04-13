@@ -7,7 +7,13 @@ export default function Home() {
         href="/ct310"
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        Run Test
+        Run the test
+      </Link>
+      <Link
+        href="/submission"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Submit the test result
       </Link>
     </div>
   );
