@@ -3,10 +3,10 @@ import path from 'path';
 import { testsResult } from '../types';
 
 export default class JsonFileTestsManager {
-  private filePath = path.join(process.cwd(), '../test-results.json');
+  private readonly filePath = path.join(process.cwd(), '../test-results.json');
   private dataset: testsResult[] = [];
 
-    constructor(firstDataset: testsResult[]) {
+  constructor(firstDataset: testsResult[]) {
     this.dataset = firstDataset;
   }
 
@@ -17,11 +17,15 @@ export default class JsonFileTestsManager {
 
   async writeJsonTestFile(newTestsResults: testsResult): Promise<void> {
     const lastDataset = await this.readJsonTestsResultFile();
-    const updatedFileContents = JSON.stringify([...lastDataset, newTestsResults], null, 2);
+    const updatedFileContents = JSON.stringify(
+      [...lastDataset, newTestsResults],
+      null,
+      2,
+    );
     await fs.writeFile(this.filePath, updatedFileContents);
   }
 
-    isTestsResultsFileUpdated(newDataset: testsResult[]): boolean {
+  isTestsResultsFileUpdated(newDataset: testsResult[]): boolean {
     const flag = this.dataset.length !== newDataset.length;
     this.dataset = newDataset;
     return flag;
