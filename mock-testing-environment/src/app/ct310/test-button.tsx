@@ -15,7 +15,7 @@ export default function TestButton({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen space-y-4">
+    <>
       <button
         onClick={handleClick}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -23,6 +23,6 @@ export default function TestButton({
         Run CT310 Compression Test
       </button>
       <p>{message}</p>
-    </div>
+    </>
   );
 }
