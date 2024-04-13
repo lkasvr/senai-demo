@@ -38,9 +38,9 @@ export default function ResultSubmission() {
               <option value="" selected disabled>
                 Selecione uma opção
               </option>
-              <option value="5534">1 - Prensa PRE-01</option>
-              <option value="5535">2 - Prensa PRE-02</option>
-              <option value="5536">3 - Prensa PRE-03</option>
+              <option value="1 - Prensa PRE-01">1 - Prensa PRE-01</option>
+              <option value="2 - Prensa PRE-02">2 - Prensa PRE-02</option>
+              <option value="3 - Prensa PRE-03">3 - Prensa PRE-03</option>
             </select>
             <label htmlFor="force">Carga:</label>
             <input type="text" id="force" name="force" required />
