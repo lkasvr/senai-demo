@@ -22,6 +22,7 @@ export default function Page() {
       Id_do_Corpo_de_Prova: testBodyId,
       Nome_da_Maquina: machineId,
       Forca: force,
+      Unidade_de_forca: "kN",
     };
 
     database.push(newResult);
