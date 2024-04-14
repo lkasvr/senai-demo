@@ -5,11 +5,11 @@
     "build": "npx tsc",
     "start": "node dist/main.js",
     "dev": "nodemon src/main.ts",
-    "lint": "eslint .  --ext .ts",
-    "lint-fix": "eslint --fix .  --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "lint-fix": "eslint --fix . --ext .ts",
+    "fix": "prettier . --write"
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin-ts": "^1.7.0",
     "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "eslint": "^8.57.0",
@@ -20,7 +20,6 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "puppeteer": "^22.6.4"
+    "dotenv": "^16.4.5"
   }
 }
