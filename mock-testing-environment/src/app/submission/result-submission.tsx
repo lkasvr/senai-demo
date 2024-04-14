@@ -23,7 +23,7 @@ export default function ResultSubmission({
     const response = await onSubmit({
       testBodyId,
       machineId,
-      force: `${force} kN`,
+      force,
     });
     setResponse(response);
     setTestBodyId("");
@@ -99,7 +99,7 @@ export default function ResultSubmission({
               Carga(kN):
             </label>
             <input
-              type="text"
+              type="number"
               id="force"
               name="force"
               required
