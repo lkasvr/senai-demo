@@ -20,7 +20,11 @@ export default function ResultSubmission({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await onSubmit({ testBodyId, machineId, force });
+    const response = await onSubmit({
+      testBodyId,
+      machineId,
+      force,
+    });
     setResponse(response);
     setTestBodyId("");
     setMachineId("");
@@ -55,6 +59,7 @@ export default function ResultSubmission({
         />
         <button
           type="button"
+          id="search"
           onClick={() => {
             setShowAdditionalInputs(true);
             setResponse("");
@@ -91,10 +96,10 @@ export default function ResultSubmission({
               htmlFor="force"
               className="block text-sm font-medium text-gray-700"
             >
-              Carga:
+              Carga(kN):
             </label>
             <input
-              type="text"
+              type="number"
               id="force"
               name="force"
               required
@@ -104,6 +109,7 @@ export default function ResultSubmission({
             />
             <button
               type="submit"
+              id="submit"
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4"
             >
               Salvar
