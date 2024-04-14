@@ -4,7 +4,7 @@ import { TestEntity } from "../types";
 
 export class DataBaseService {
   private readonly filePath = path.join(process.cwd(), "../database.json");
-  private data: TestEntity[] = []
+  private data: TestEntity[] = [];
 
   async find(): Promise<TestEntity[]> {
     const results = await fs.readFile(this.filePath, "utf8");
