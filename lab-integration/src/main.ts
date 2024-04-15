@@ -1,4 +1,4 @@
-import { WatchEventType, promises as fs, watch } from "fs";
+import { promises as fs, watch } from "fs";
 import * as lockfile from "proper-lockfile";
 import path from "path";
 import { queue } from "async";
@@ -24,7 +24,7 @@ const machines: Machines = {
   await page.setViewport({ width: 720, height: 720 });
   await page.goto("http://localhost:3000/submission");
 
-  const queueTask = queue(async (task, callback) => {
+  const queueTask = queue(async (_, callback) => {
     try {
       await lockfile.lock(filePath);
       const stringifiedDataset = await fs.readFile(filePath, "utf8");
@@ -61,7 +61,7 @@ const machines: Machines = {
           await page.waitForSelector("select#machineId");
           await page.select(
             "select#machineId",
-            machines[testResult.Id_da_Maquina] ?? "",
+            machines[testResult.Id_da_Maquina],
           );
 
           await page.type("#force", parseFloat(testResult.Forca).toFixed(2));
@@ -78,7 +78,6 @@ const machines: Machines = {
 
   watch(
     filePath,
-    async (eventType) =>
-      eventType === "change" && queueTask.push({ eventType }),
+    (eventType) => eventType === "change" && queueTask.push({}),
   );
 })();
