@@ -76,8 +76,5 @@ const machines: Machines = {
     callback();
   }, 1);
 
-  watch(
-    filePath,
-    (eventType) => eventType === "change" && queueTask.push({}),
-  );
+  watch(filePath, (eventType) => eventType === "change" && queueTask.push({}));
 })();
