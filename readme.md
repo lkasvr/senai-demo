@@ -2,11 +2,11 @@
 
 ## Overview
 
-Welcome to the GitHub repository for our project developed during the 20-hour InovaTI HACKATHON. This project aims to integrate a laboratory testing machine into the lab's digital system.
+Welcome to the GitHub repository for our project developed during the 20-hour InovaTI HACKATHON. This project aims to integrate a local Quality Assurance & Quality Control laboratory testing machine into the lab's digital system.
 
 ## The Challenge
 
-During the Hackathon, participants were tasked with creating innovative solutions for real problems local companies have. Our team focused on solving the data integrity problem of a lab test result. Senai, a local lab, tests construction materials such as concrete to verify their quality. After testing the material, a lab technician has to read the result value on the machine's display and record the result in their system, which is error-prone.
+During the Hackathon, participants were tasked with creating innovative solutions for real problems local companies have. Our team focused on solving the data integrity problem of a Laboratory testing result. Senai, a QA/QC lab, tests construction materials such as concrete to ensure their quality. After testing the material, a lab technician has to read the result value on the machine's display and manually record the result in their system, which is error-prone.
 
 ## Our Solution
 
@@ -61,6 +61,8 @@ npm install
 ```
 
 3. Run the script in the development mode:
+
+- Please expect a browser to pop up as the script runs because we want to demo how the macro works, but it is only for demonstration purposes.
 
 ```bash
 npm run dev
