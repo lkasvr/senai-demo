@@ -1,8 +1,10 @@
-import { DateTime } from "luxon";
+import { WatchEventType, promises as fs, watch } from "fs";
+import * as lockfile from "proper-lockfile";
+import path from "path";
+import { queue } from "async";
 import puppeteer from "puppeteer";
 
-import { promises as fs, watch } from "fs";
-import path from "path";
+import { DateTime } from "luxon";
 import { TestsResult } from "./types";
 
 const filePath = path.join(process.cwd(), "../test-results.json");
@@ -23,50 +25,61 @@ const machines = new Map<string, string>([
   await page.setViewport({ width: 720, height: 720 });
   await page.goto("http://localhost:3000/submission");
 
-  watch(filePath, async (eventType) => {
-    const stringifiedDataset = await fs.readFile(filePath, "utf8");
-    const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
-    const dataset = parsedDataset.map((testResult) => {
-      const Data = DateTime.fromFormat(
-        testResult.Data,
-        "dd/LL/yyyy, HH:mm:ss",
-        { locale: "pt-BR" },
-      );
-
-      return {
-        ...testResult,
-        Data: Data.isValid ? Data : DateTime.now(),
-      };
-    });
-
-    if (eventType === "change") {
-      const newTestsResults = dataset.filter((testResult) => {
-        console.info(lastTestResultDate);
-        return testResult.Data.diff(lastTestResultDate).milliseconds > 0;
-      });
-      if (dataset.length > 0) {
-        lastTestResultDate = dataset.sort(
-          (a, b) => b.Data.diff(a.Data).milliseconds,
-        )[0].Data as unknown as DateTime<true>;
-
-        for (const testResult of newTestsResults) {
-          await page.type("#testBodyId", testResult.Id_do_Corpo_de_Prova);
-          await page.click("button#search");
-
-          await page.waitForSelector("select#machineId");
-          await page.select(
-            "select#machineId",
-            machines.get(testResult.Id_da_Maquina) ?? "",
+  const queueTask = queue(
+    async (task: { eventType: WatchEventType }, callback) => {
+      try {
+        await lockfile.lock(filePath);
+        const stringifiedDataset = await fs.readFile(filePath, "utf8");
+        const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
+        const dataset = parsedDataset.map((testResult) => {
+          const Data = DateTime.fromFormat(
+            testResult.Data,
+            "dd/LL/yyyy, HH:mm:ss",
+            { locale: "pt-BR" },
           );
 
-          await page.type("#force", testResult.Forca);
-          await page.click("button#submit");
-          await page.waitForSelector("button#search");
+          return {
+            ...testResult,
+            Data: Data.isValid ? Data : DateTime.now(),
+          };
+        });
+
+        if (task.eventType === "change") {
+          const newTestsResults = dataset.filter(
+            (testResult) =>
+              testResult.Data.diff(lastTestResultDate).milliseconds > 0,
+          );
+          if (dataset.length > 0) {
+            lastTestResultDate = dataset.sort(
+              (a, b) => b.Data.diff(a.Data).milliseconds,
+            )[0].Data as unknown as DateTime<true>;
+
+            for (const testResult of newTestsResults) {
+              await page.type("#testBodyId", testResult.Id_do_Corpo_de_Prova);
+              await page.click("button#search");
+
+              await page.waitForSelector("select#machineId");
+              await page.select(
+                "select#machineId",
+                machines.get(testResult.Id_da_Maquina) ?? "",
+              );
+
+              await page.waitForSelector("button#submit");
+              await page.type("#force", testResult.Forca);
+              await page.click("button#submit");
+
+              await page.waitForSelector("button#search");
+            }
+          }
         }
+      } finally {
+        await lockfile.unlock(filePath);
       }
 
-      console.info(newTestsResults);
-      console.info(lastTestResultDate);
-    }
-  });
+      callback();
+    },
+    1,
+  );
+
+  watch(filePath, async (eventType) => queueTask.push({ eventType }));
 })();
