@@ -14,9 +14,3 @@ export interface ITestsResult {
   Tensão: string;
   Ruptura: "ND";
 }
-
-export interface TestEntity {
-  Id_do_Corpo_de_Prova: string;
-  Nome_da_Maquina: string;
-  Forca: string;
-}
