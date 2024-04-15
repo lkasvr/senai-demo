@@ -1,4 +1,5 @@
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
+import puppeteer from "puppeteer";
 
 import { promises as fs, watch } from "fs";
 import path from "path";
@@ -6,37 +7,66 @@ import { TestsResult } from "./types";
 
 const filePath = path.join(process.cwd(), "../test-results.json");
 
+const machines = new Map<string, string>([
+  ["5534", "1 - Prensa PRE-01"],
+  ["5533", "2 - Prensa PRE-02"],
+  ["5532", "3 - Prensa PRE-03"],
+]);
+
 (async () => {
   console.info("SCRIPT IS RUNNING...");
 
   let lastTestResultDate = DateTime.now();
 
+  const browser = await puppeteer.launch({ headless: false, slowMo: 100 });
+  const page = await browser.newPage();
+  await page.setViewport({ width: 720, height: 720 });
+  await page.goto("http://localhost:3000/submission");
+
   watch(filePath, async (eventType) => {
     const stringifiedDataset = await fs.readFile(filePath, "utf8");
     const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
     const dataset = parsedDataset.map((testResult) => {
-      const Data = DateTime.fromFormat(testResult.Data, 'dd/LL/yyyy, HH:mm:ss', { locale: 'pt-BR' });
+      const Data = DateTime.fromFormat(
+        testResult.Data,
+        "dd/LL/yyyy, HH:mm:ss",
+        { locale: "pt-BR" },
+      );
 
       return {
         ...testResult,
-      Data: Data.isValid ? Data : DateTime.now()
-    }
-  });
+        Data: Data.isValid ? Data : DateTime.now(),
+      };
+    });
 
     if (eventType === "change") {
-      const newTestsResults = dataset.filter(
-        (testResult) => {
-          console.info(lastTestResultDate)
-         return testResult.Data.diff(lastTestResultDate).milliseconds > 0;
-        }
-      );
-      if(dataset.length > 0)
-        lastTestResultDate = dataset.sort((a, b) => b.Data.diff(a.Data).milliseconds)[0].Data as unknown as DateTime<true>;
+      const newTestsResults = dataset.filter((testResult) => {
+        console.info(lastTestResultDate);
+        return testResult.Data.diff(lastTestResultDate).milliseconds > 0;
+      });
+      if (dataset.length > 0) {
+        lastTestResultDate = dataset.sort(
+          (a, b) => b.Data.diff(a.Data).milliseconds,
+        )[0].Data as unknown as DateTime<true>;
 
+        for (const testResult of newTestsResults) {
+          await page.type("#testBodyId", testResult.Id_do_Corpo_de_Prova);
+          await page.click("button#search");
+
+          await page.waitForSelector("select#machineId");
+          await page.select(
+            "select#machineId",
+            machines.get(testResult.Id_da_Maquina) ?? "",
+          );
+
+          await page.type("#force", testResult.Forca);
+          await page.click("button#submit");
+          await page.waitForSelector("button#search");
+        }
+      }
 
       console.info(newTestsResults);
       console.info(lastTestResultDate);
     }
   });
 })();
-
