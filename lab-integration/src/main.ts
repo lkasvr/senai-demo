@@ -16,16 +16,16 @@ const filePath = path.join(process.cwd(), "../test-results.json");
       const newTestsResults = dataset.filter(
         (testResult) => convertToDate(testResult.Data) > lastTestResultDate,
       );
+      lastTestResultDate = getLastTestsResulstDate(dataset);
 
-      if (newTestsResults.length > 0)
-        lastTestResultDate = getLastTestsResulstDate(dataset);
-
+      console.info(newTestsResults);
       console.info(lastTestResultDate);
     }
   });
 })();
 
 function getLastTestsResulstDate(dataset: TestsResult[]): Date {
+  if(dataset.length === 0) return new Date();
   const orderedNewTestsResults = dataset.sort(
     (a, b) => convertToDate(a.Data).getTime() - convertToDate(b.Data).getTime(),
   );
