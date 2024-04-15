@@ -28,25 +28,25 @@ const machines = new Map<string, string>([
   const queueTask = queue(
     async (task: { eventType: WatchEventType }, callback) => {
       try {
-        await lockfile.lock(filePath);
-        const stringifiedDataset = await fs.readFile(filePath, "utf8");
-        const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
-        const dataset = parsedDataset
-          .map((testResult) => {
-            const Data = DateTime.fromFormat(
-              testResult.Data,
-              "dd/LL/yyyy, HH:mm:ss",
-              { locale: "pt-BR" },
-            );
-
-            return {
-              ...testResult,
-              Data,
-            };
-          })
-          .filter((testResult) => testResult.Data.isValid);
-
         if (task.eventType === "change") {
+          await lockfile.lock(filePath);
+          const stringifiedDataset = await fs.readFile(filePath, "utf8");
+          const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
+          const dataset = parsedDataset
+            .map((testResult) => {
+              const Data = DateTime.fromFormat(
+                testResult.Data,
+                "dd/LL/yyyy, HH:mm:ss",
+                { locale: "pt-BR" },
+              );
+
+              return {
+                ...testResult,
+                Data,
+              };
+            })
+            .filter((testResult) => testResult.Data.isValid);
+
           const newTestsResults = dataset.filter(
             (testResult) =>
               testResult.Data.diff(lastTestResultDate).milliseconds > 0,
@@ -54,7 +54,7 @@ const machines = new Map<string, string>([
           if (newTestsResults.length > 0) {
             lastTestResultDate = dataset.sort(
               (a, b) => b.Data.diff(a.Data).milliseconds,
-            )[0].Data as unknown as DateTime<true>;
+            )[0].Data as DateTime<true>;
 
             for (const testResult of newTestsResults) {
               await page.type("#testBodyId", testResult.Id_do_Corpo_de_Prova);
@@ -67,7 +67,10 @@ const machines = new Map<string, string>([
               );
 
               await page.waitForSelector("button#submit");
-              await page.type("#force", testResult.Forca);
+              await page.type(
+                "#force",
+                parseFloat(testResult.Forca).toFixed(2),
+              );
               await page.click("button#submit");
 
               await page.waitForSelector("button#search");
