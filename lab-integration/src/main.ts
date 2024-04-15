@@ -31,25 +31,27 @@ const machines = new Map<string, string>([
         await lockfile.lock(filePath);
         const stringifiedDataset = await fs.readFile(filePath, "utf8");
         const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
-        const dataset = parsedDataset.map((testResult) => {
-          const Data = DateTime.fromFormat(
-            testResult.Data,
-            "dd/LL/yyyy, HH:mm:ss",
-            { locale: "pt-BR" },
-          );
+        const dataset = parsedDataset
+          .map((testResult) => {
+            const Data = DateTime.fromFormat(
+              testResult.Data,
+              "dd/LL/yyyy, HH:mm:ss",
+              { locale: "pt-BR" },
+            );
 
-          return {
-            ...testResult,
-            Data: Data.isValid ? Data : DateTime.now(),
-          };
-        });
+            return {
+              ...testResult,
+              Data,
+            };
+          })
+          .filter((testResult) => testResult.Data.isValid);
 
         if (task.eventType === "change") {
           const newTestsResults = dataset.filter(
             (testResult) =>
               testResult.Data.diff(lastTestResultDate).milliseconds > 0,
           );
-          if (dataset.length > 0) {
+          if (newTestsResults.length > 0) {
             lastTestResultDate = dataset.sort(
               (a, b) => b.Data.diff(a.Data).milliseconds,
             )[0].Data as unknown as DateTime<true>;
