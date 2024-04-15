@@ -25,7 +25,7 @@ const filePath = path.join(process.cwd(), "../test-results.json");
 })();
 
 function getLastTestsResulstDate(dataset: TestsResult[]): Date {
-  if(dataset.length === 0) return new Date();
+  if (dataset.length === 0) return new Date();
   const orderedNewTestsResults = dataset.sort(
     (a, b) => convertToDate(a.Data).getTime() - convertToDate(b.Data).getTime(),
   );
