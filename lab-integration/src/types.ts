@@ -1,6 +1,3 @@
-import { WatchEventType } from "fs";
-import { DateTime } from "luxon";
-
 export type TestsResult = {
   Id_da_Maquina: string;
   Id_do_Teste: string;
