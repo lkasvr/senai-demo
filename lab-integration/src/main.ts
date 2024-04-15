@@ -1,7 +1,7 @@
 import { promises as fs, watch } from "fs";
 import * as lockfile from "proper-lockfile";
 import path from "path";
-import { queue } from "async";
+import fastq from "fastq";
 import puppeteer from "puppeteer";
 import { DateTime } from "luxon";
 import { Machines, TestsResult } from "./types";
@@ -19,12 +19,12 @@ const machines: Machines = {
 
   let lastTestResultDate = DateTime.now();
 
-  const browser = await puppeteer.launch({ headless: false, slowMo: 100 });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.setViewport({ width: 720, height: 720 });
   await page.goto("http://localhost:3000/submission");
 
-  const queueTask = queue(async (_, callback) => {
+  const queue = fastq.promise(async () => {
     try {
       await lockfile.lock(filePath);
       const stringifiedDataset = await fs.readFile(filePath, "utf8");
@@ -72,9 +72,7 @@ const machines: Machines = {
     } finally {
       await lockfile.unlock(filePath);
     }
-
-    callback();
   }, 1);
 
-  watch(filePath, (eventType) => eventType === "change" && queueTask.push({}));
+  watch(filePath, (eventType) => eventType === "change" && queue.push({}));
 })();
