@@ -14,3 +14,7 @@ export type TestsResult = {
   Tensão: string;
   Ruptura: "ND";
 };
+
+export type Machines = {
+  [key: string]: string;
+};
