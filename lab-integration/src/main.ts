@@ -1,6 +1,6 @@
 import { promises as fs, watch } from "fs";
 import path from "path";
-import { ITestsResult } from "./types";
+import { TestsResult } from "./types";
 
 const filePath = path.join(process.cwd(), "../test-results.json");
 
@@ -8,7 +8,7 @@ const filePath = path.join(process.cwd(), "../test-results.json");
   console.info("SCRIPT IS RUNNING...");
 
   const stringifiedDataset = await fs.readFile(filePath, "utf8");
-  const dataset = JSON.parse(stringifiedDataset) as ITestsResult[];
+  const dataset = JSON.parse(stringifiedDataset) as TestsResult[];
   let lastTestResultDate: Date = getLastTestsResulstDate(dataset);
 
   watch(filePath, (eventType) => {
@@ -25,7 +25,7 @@ const filePath = path.join(process.cwd(), "../test-results.json");
   });
 })();
 
-function getLastTestsResulstDate(dataset: ITestsResult[]): Date {
+function getLastTestsResulstDate(dataset: TestsResult[]): Date {
   const orderedNewTestsResults = dataset.sort(
     (a, b) => convertToDate(a.Data).getTime() - convertToDate(b.Data).getTime(),
   );

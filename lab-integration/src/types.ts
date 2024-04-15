@@ -1,4 +1,4 @@
-export interface ITestsResult {
+export type TestsResult = {
   Id_da_Maquina: string;
   Id_do_Teste: string;
   Id_do_Corpo_de_Prova: string;
@@ -13,4 +13,4 @@ export interface ITestsResult {
   Forca: string;
   Tensão: string;
   Ruptura: "ND";
-}
+};
