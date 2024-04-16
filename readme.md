@@ -62,8 +62,6 @@ npm install
 
 3. Run the script in the development mode:
 
-- Please expect a browser to pop up as the script runs because we want to demo how the macro works, but it is only for demonstration purposes.
-
 ```bash
 npm run dev
 ```
