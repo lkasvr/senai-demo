@@ -1,8 +1,8 @@
+import { DateTime } from "luxon";
 import { promises as fs, watch } from "fs";
 import path from "path";
 import fastq from "fastq";
 import puppeteer from "puppeteer";
-import { DateTime } from "luxon";
 import { TestsResult } from "./types";
 
 const filePath = path.join(process.cwd(), "../test-results.json");
