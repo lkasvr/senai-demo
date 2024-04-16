@@ -1,5 +1,4 @@
 import { promises as fs, watch } from "fs";
-import * as lockfile from "proper-lockfile";
 import path from "path";
 import fastq from "fastq";
 import puppeteer from "puppeteer";
@@ -25,52 +24,46 @@ const machines: { [key: string]: string } = {
   await page.goto("http://localhost:3000/submission");
 
   const queue = fastq.promise(async () => {
-    try {
-      await lockfile.lock(filePath);
-      const stringifiedDataset = await fs.readFile(filePath, "utf8");
-      const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
-      const dataset = parsedDataset
-        .map((testResult) => {
-          const Data = DateTime.fromFormat(
-            testResult.Data,
-            "dd/LL/yyyy, HH:mm:ss",
-            { locale: "pt-BR" },
-          );
+    const stringifiedDataset = await fs.readFile(filePath, "utf8");
+    const parsedDataset = JSON.parse(stringifiedDataset) as TestsResult[];
+    const dataset = parsedDataset
+      .map((testResult) => {
+        const Data = DateTime.fromFormat(
+          testResult.Data,
+          "dd/LL/yyyy, HH:mm:ss",
+          { locale: "pt-BR" },
+        );
 
-          return {
-            ...testResult,
-            Data,
-          };
-        })
-        .filter((testResult) => testResult.Data.isValid);
+        return {
+          ...testResult,
+          Data,
+        };
+      })
+      .filter((testResult) => testResult.Data.isValid);
 
-      const newTestsResults = dataset.filter(
-        (testResult) =>
-          testResult.Data.diff(lastTestResultDate).milliseconds > 0,
-      );
+    const newTestsResults = dataset.filter(
+      (testResult) => testResult.Data.diff(lastTestResultDate).milliseconds > 0,
+    );
 
-      if (newTestsResults.length > 0) {
-        lastTestResultDate = newTestsResults.sort(
-          (a, b) => b.Data.diff(a.Data).milliseconds,
-        )[0].Data as DateTime<true>;
+    if (newTestsResults.length > 0) {
+      lastTestResultDate = newTestsResults.sort(
+        (a, b) => b.Data.diff(a.Data).milliseconds,
+      )[0].Data as DateTime<true>;
 
-        for (const testResult of newTestsResults) {
-          await page.type("#testBodyId", testResult.Id_do_Corpo_de_Prova);
-          await page.click("button#search");
+      for (const testResult of newTestsResults) {
+        await page.type("#testBodyId", testResult.Id_do_Corpo_de_Prova);
+        await page.click("button#search");
 
-          await page.waitForSelector("select#machineId");
-          await page.select(
-            "select#machineId",
-            machines[testResult.Id_da_Maquina],
-          );
+        await page.waitForSelector("select#machineId");
+        await page.select(
+          "select#machineId",
+          machines[testResult.Id_da_Maquina],
+        );
 
-          await page.type("#force", parseFloat(testResult.Forca).toFixed(2));
+        await page.type("#force", parseFloat(testResult.Forca).toFixed(2));
 
-          await page.click("button#submit");
-        }
+        await page.click("button#submit");
       }
-    } finally {
-      await lockfile.unlock(filePath);
     }
   }, 1);
 
