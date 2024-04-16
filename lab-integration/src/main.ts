@@ -4,11 +4,11 @@ import path from "path";
 import fastq from "fastq";
 import puppeteer from "puppeteer";
 import { DateTime } from "luxon";
-import { Machines, TestsResult } from "./types";
+import { TestsResult } from "./types";
 
 const filePath = path.join(process.cwd(), "../test-results.json");
 
-const machines: Machines = {
+const machines: { [key: string]: string } = {
   5534: "1 - Prensa PRE-01",
   5533: "2 - Prensa PRE-02",
   5532: "3 - Prensa PRE-03",
